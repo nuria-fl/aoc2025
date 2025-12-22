@@ -35,21 +35,10 @@ export function isInvalidId2(num: string): boolean {
 		return false;
 	}
 
-	const allEqual = num.split("").every((char) => char === num[0]);
-	if (allEqual) {
-		return true;
-	}
+	const halfLength = Math.floor(num.length / 2);
 
-	if (num.length <= 2) {
-		return false;
-	}
-
-	const halfLength = num.length / 2;
-
-	for (let i = 2; i <= halfLength; i += 1) {
-		const groups = num.match(new RegExp(`.{1,${i}}`, "g"));
-
-		if (groups?.every((group) => group === groups[0])) {
+	for (let i = 1; i <= halfLength; i += 1) {
+		if (new RegExp(`^(.{${i}})\\1+$`).test(num)) {
 			return true;
 		}
 	}
