@@ -6,26 +6,23 @@ export function turnDialToPosition(
 ): { nextPosition: number; timesTurned: number } {
 	const direction = instruction.charAt(0) as "L" | "R";
 	const steps = parseInt(instruction.slice(1));
-	let nextPosition = currentPosition;
-	let timesTurned = 0;
 
-	for (let i = 0; i < steps; i++) {
-		if (nextPosition === 0) {
-			timesTurned += 1;
-		}
-		if (direction === "L") {
-			nextPosition -= 1;
-		} else {
-			nextPosition += 1;
-		}
+	const nextPosition =
+		direction === "L"
+			? (((currentPosition - steps) % 100) + 100) % 100
+			: (currentPosition + steps) % 100;
 
-		if (nextPosition < 0) {
-			nextPosition = 99;
-		}
-		if (nextPosition >= 100) {
-			nextPosition = 0;
-		}
-	}
+	const firstZeroAt =
+		direction === "L"
+			? currentPosition === 0
+				? 0
+				: currentPosition
+			: currentPosition === 0
+			? 0
+			: 100 - currentPosition;
+
+	const timesTurned =
+		firstZeroAt < steps ? 1 + Math.floor((steps - firstZeroAt - 1) / 100) : 0;
 
 	return {
 		nextPosition,
