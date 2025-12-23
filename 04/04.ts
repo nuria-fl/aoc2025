@@ -2,42 +2,27 @@ import { parseInput } from "../parseInput";
 
 export function part1(file: string): number {
 	const grid = parseInput(file).map((line) => line.split(""));
+	const directions = [
+		[-1, -1],
+		[-1, 0],
+		[-1, 1],
+		[0, -1],
+		[0, 1],
+		[1, -1],
+		[1, 0],
+		[1, 1],
+	];
 
-	let count = 0;
-	for (let i = 0; i < grid.length; i++) {
-		for (let j = 0; j < grid[i].length; j++) {
-			let adjacentRolls = 0;
-			if (grid[i][j] === "@") {
-				if (grid[i + 1]?.[j] === "@") {
-					adjacentRolls++;
-				}
-				if (grid[i - 1]?.[j] === "@") {
-					adjacentRolls++;
-				}
-				if (grid[i]?.[j + 1] === "@") {
-					adjacentRolls++;
-				}
-				if (grid[i]?.[j - 1] === "@") {
-					adjacentRolls++;
-				}
-				if (grid[i + 1]?.[j + 1] === "@") {
-					adjacentRolls++;
-				}
-				if (grid[i + 1]?.[j - 1] === "@") {
-					adjacentRolls++;
-				}
-				if (grid[i - 1]?.[j + 1] === "@") {
-					adjacentRolls++;
-				}
-				if (grid[i - 1]?.[j - 1] === "@") {
-					adjacentRolls++;
-				}
-				if (adjacentRolls < 4) {
-					count++;
-				}
+	return grid
+		.flatMap((row, i) => row.map((cell, j) => ({ cell, i, j })))
+		.filter(({ cell, i, j }) => {
+			if (cell !== "@") {
+				return false;
 			}
-		}
-	}
+			const adjacentRolls = directions.filter(
+				([di, dj]) => grid[i + di]?.[j + dj] === "@"
+			).length;
 
-	return count;
+			return adjacentRolls < 4;
+		}).length;
 }
